@@ -2,9 +2,10 @@ import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { useData } from "../context/DataContext";
 import { useAuth } from "../context/AuthContext";
-import { Heart, MapPin, Search, SlidersHorizontal, X } from "lucide-react";
+import { Heart, List, Map as MapIcon, MapPin, Search, SlidersHorizontal, X } from "lucide-react";
 import StarRating from "../components/StarRating";
 import type { EquipmentCategory } from "../types";
+import MapView, { type MapPoint } from "../components/MapView";
 
 const CATEGORIES: EquipmentCategory[] = [
   "Tractor",
@@ -27,6 +28,7 @@ export default function Equipment() {
   const [availability, setAvailability] = useState<"all" | "available" | "booked">("all");
   const [sort, setSort] = useState<"newest" | "price-asc" | "price-desc">("newest");
   const [showFilters, setShowFilters] = useState(false);
+  const [view, setView] = useState<"list" | "map">("list");
 
   const locationOptions = useMemo(
     () => Array.from(new Set(equipment.map((e) => e.location))).sort(),
@@ -152,7 +154,46 @@ export default function Equipment() {
 
       <p className="text-sm text-gray-500 mb-3">{filtered.length} equipment item{filtered.length !== 1 ? "s" : ""}</p>
 
-      {filtered.length === 0 ? (
+      {/* View toggle */}
+      <div className="mb-4 inline-flex rounded-lg border border-gray-200 bg-white overflow-hidden">
+        <button
+          onClick={() => setView("list")}
+          className={`px-3 py-1.5 text-sm flex items-center gap-1.5 ${
+            view === "list" ? "bg-brand-600 text-white" : "text-gray-700 hover:bg-gray-50"
+          }`}
+        >
+          <List className="w-4 h-4" /> List
+        </button>
+        <button
+          onClick={() => setView("map")}
+          className={`px-3 py-1.5 text-sm flex items-center gap-1.5 ${
+            view === "map" ? "bg-brand-600 text-white" : "text-gray-700 hover:bg-gray-50"
+          }`}
+        >
+          <MapIcon className="w-4 h-4" /> Map
+        </button>
+      </div>
+
+      {view === "map" && (
+        <MapView
+          points={filtered.map<MapPoint>((e) => {
+            const owner = getUserById(e.ownerId);
+            return {
+              id: e.id,
+              type: "equipment",
+              title: e.name,
+              subtitle: `₹${e.pricePerDay.toLocaleString("en-IN")}/day · ${e.category}`,
+              emoji: e.imageEmoji,
+              location: e.location,
+              available: e.available,
+              href: `/equipment/${e.id}`,
+              ownerName: owner?.name,
+            };
+          })}
+        />
+      )}
+
+      {view === "list" && (filtered.length === 0 ? (
         <div className="card p-8 text-center text-gray-500">No equipment matches your filters.</div>
       ) : (
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -215,7 +256,7 @@ export default function Equipment() {
             );
           })}
         </div>
-      )}
+      ))}
     </div>
   );
 }

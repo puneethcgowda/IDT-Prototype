@@ -39,7 +39,9 @@ interface DataContextValue {
   deleteEquipment: (id: string) => void;
 
   createOrder: (o: Omit<Order, "id" | "createdAt" | "status">) => Order;
+  updateOrderStatus: (id: string, status: Order["status"]) => void;
   createBooking: (b: Omit<Booking, "id" | "createdAt" | "status">) => Booking;
+  updateBookingStatus: (id: string, status: Booking["status"]) => void;
 
   addReview: (r: Omit<Review, "id" | "createdAt">) => Review;
 
@@ -143,6 +145,20 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
     return booking;
   }, [refresh]);
 
+  const updateOrderStatus: DataContextValue["updateOrderStatus"] = useCallback((id, status) => {
+    storage.setOrders(
+      storage.getOrders().map((o) => (o.id === id ? { ...o, status } : o))
+    );
+    refresh();
+  }, [refresh]);
+
+  const updateBookingStatus: DataContextValue["updateBookingStatus"] = useCallback((id, status) => {
+    storage.setBookings(
+      storage.getBookings().map((b) => (b.id === id ? { ...b, status } : b))
+    );
+    refresh();
+  }, [refresh]);
+
   const addReview: DataContextValue["addReview"] = useCallback((r) => {
     const review: Review = { ...r, id: uid("rev"), createdAt: new Date().toISOString() };
     storage.setReviews([review, ...storage.getReviews()]);
@@ -232,6 +248,8 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
       isSaved,
       getUserById,
       getAverageRating,
+      updateOrderStatus,
+      updateBookingStatus,
     }),
     [
       users,
@@ -258,6 +276,8 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
       isSaved,
       getUserById,
       getAverageRating,
+      updateOrderStatus,
+      updateBookingStatus,
     ]
   );
 

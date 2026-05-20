@@ -70,7 +70,7 @@ export interface Order {
   sellerId: string;
   quantityKg: number;
   totalAmount: number;
-  status: "paid" | "shipped" | "delivered" | "cancelled";
+  status: "paid" | "packed" | "shipped" | "delivered" | "cancelled";
   createdAt: string;
 }
 

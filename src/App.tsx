@@ -16,6 +16,7 @@ import Messages from "./pages/Messages";
 import About from "./pages/About";
 import { useAuth } from "./context/AuthContext";
 import OnboardingTour from "./components/OnboardingTour";
+import ChatbotWidget from "./components/ChatbotWidget";
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth();
@@ -74,6 +75,7 @@ export default function App() {
       </main>
       <Footer />
       {user && !user.hasCompletedOnboarding && <OnboardingTour />}
+      <ChatbotWidget />
     </div>
   );
 }
