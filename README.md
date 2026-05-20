@@ -21,6 +21,12 @@ AgriConnect is a digital cooperative that connects small farmers directly with c
 | 9 | **Reviews & ratings** for products, equipment and users | Product/Equipment/Profile pages |
 | 10 | **Direct messaging** between farmers and consumers | `/messages` |
 | 11 | **Interactive 8-step onboarding tour** on first login | Auto-launches |
+| 12 | **🌐 Multi-language** — English / हिन्दी / ಕನ್ನಡ via `i18next` | Globe icon in navbar |
+| 13 | **🌦️ Live weather widget + crop advisory** (Open-Meteo API, 7-day forecast) | `/dashboard` |
+| 14 | **🗺️ Map view** of farmers & equipment (Leaflet + OpenStreetMap) | `/marketplace`, `/equipment` |
+| 15 | **🤖 AgriBot floating chatbot** — answers crops/schemes/platform questions | Floating button on every page |
+| 16 | **📦 Order status tracker** (Paid → Packed → Shipped → Delivered) with status advancement | `/dashboard` orders/sales tab |
+| 17 | **📄 PDF invoice download** for every order & booking (jsPDF) | `/dashboard` orders & bookings |
 
 ---
 
@@ -31,6 +37,10 @@ AgriConnect is a digital cooperative that connects small farmers directly with c
 - **Tailwind CSS** (utility-first styling)
 - **React Router v6**
 - **lucide-react** icons
+- **i18next** + **react-i18next** for multi-language (English / हिन्दी / ಕನ್ನಡ)
+- **Leaflet** + **OpenStreetMap** for the map view (loaded via CDN)
+- **Open-Meteo API** for the weather widget (free, no key needed)
+- **jsPDF** for invoice PDF generation
 - **localStorage** as the prototype data layer (no backend needed to demo)
 
 ---

@@ -5,6 +5,7 @@ import { useData } from "../context/DataContext";
 import {
   Boxes,
   CalendarDays,
+  FileText,
   Heart,
   Package,
   Plus,
@@ -15,6 +16,9 @@ import {
 import StarRating from "../components/StarRating";
 import NewListingModal from "../components/NewListingModal";
 import NewEquipmentModal from "../components/NewEquipmentModal";
+import WeatherWidget from "../components/WeatherWidget";
+import OrderStatusTracker from "../components/OrderStatusTracker";
+import { downloadInvoice } from "../utils/invoice";
 
 type Tab = "overview" | "listings" | "bookings" | "orders" | "saved";
 
@@ -161,8 +165,10 @@ export default function Dashboard() {
       </div>
 
       {tab === "overview" && (
-        <div className="grid lg:grid-cols-2 gap-4">
-          <Card title="Recent activity" icon={Boxes}>
+        <div className="space-y-4">
+          <WeatherWidget location={user.location} />
+          <div className="grid lg:grid-cols-2 gap-4">
+            <Card title="Recent activity" icon={Boxes}>
             {(isFarmer ? myOrdersAsSeller : myOrdersAsBuyer).slice(0, 4).length === 0 ? (
               <p className="text-sm text-gray-500">No activity yet.</p>
             ) : (
@@ -205,6 +211,7 @@ export default function Dashboard() {
               </ul>
             )}
           </Card>
+          </div>
         </div>
       )}
 
@@ -392,89 +399,145 @@ function Card({ title, icon: Icon, children }: { title: string; icon: any; child
 }
 
 function OrdersList({ orders, side }: { orders: any[]; side: "buyer" | "seller" }) {
-  const { listings, getUserById } = useData();
+  const { listings, getUserById, updateOrderStatus } = useData();
   if (orders.length === 0) {
     return <p className="text-sm text-gray-500">No orders yet.</p>;
   }
   return (
-    <div className="card overflow-hidden">
-      <table className="w-full text-sm">
-        <thead className="bg-gray-50 text-gray-600 text-xs uppercase">
-          <tr>
-            <th className="text-left px-4 py-2">Listing</th>
-            <th className="text-left px-4 py-2">{side === "seller" ? "Buyer" : "Seller"}</th>
-            <th className="text-left px-4 py-2">Qty</th>
-            <th className="text-left px-4 py-2">Total</th>
-            <th className="text-left px-4 py-2">Status</th>
-            <th className="text-left px-4 py-2">Date</th>
-          </tr>
-        </thead>
-        <tbody>
-          {orders.map((o) => {
-            const l = listings.find((x) => x.id === o.listingId);
-            const counter = getUserById(side === "seller" ? o.buyerId : o.sellerId);
-            return (
-              <tr key={o.id} className="border-t border-gray-100">
-                <td className="px-4 py-2 flex items-center gap-2">
-                  <span>{l?.imageEmoji ?? "📦"}</span>
-                  <span>{l?.title ?? "Listing"}</span>
-                </td>
-                <td className="px-4 py-2">{counter?.name ?? "—"}</td>
-                <td className="px-4 py-2">{o.quantityKg} kg</td>
-                <td className="px-4 py-2 font-semibold">₹{o.totalAmount.toLocaleString("en-IN")}</td>
-                <td className="px-4 py-2 capitalize">
-                  <span className="badge bg-brand-50 text-brand-700">{o.status}</span>
-                </td>
-                <td className="px-4 py-2 text-gray-500">{new Date(o.createdAt).toLocaleDateString()}</td>
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
+    <div className="space-y-3">
+      {orders.map((o) => {
+        const l = listings.find((x) => x.id === o.listingId);
+        const buyer = getUserById(o.buyerId);
+        const seller = getUserById(o.sellerId);
+        const counter = side === "seller" ? buyer : seller;
+        return (
+          <div key={o.id} className="card p-4">
+            <div className="flex flex-wrap items-start justify-between gap-3 mb-3">
+              <div className="flex items-start gap-3">
+                <div className="text-3xl">{l?.imageEmoji ?? "📦"}</div>
+                <div>
+                  <div className="font-semibold text-gray-900">{l?.title ?? "Listing"}</div>
+                  <div className="text-xs text-gray-500">
+                    {o.quantityKg} kg · {side === "seller" ? "Sold to" : "From"} {counter?.name ?? "—"} ·{" "}
+                    {new Date(o.createdAt).toLocaleDateString()}
+                  </div>
+                </div>
+              </div>
+              <div className="text-right">
+                <div className="font-bold text-brand-700">₹{o.totalAmount.toLocaleString("en-IN")}</div>
+                <button
+                  onClick={() =>
+                    downloadInvoice({
+                      kind: "order",
+                      order: o,
+                      listing: l,
+                      buyer,
+                      seller,
+                    })
+                  }
+                  className="mt-1 inline-flex items-center gap-1 text-xs text-brand-700 hover:underline"
+                >
+                  <FileText className="w-3.5 h-3.5" /> Invoice (PDF)
+                </button>
+              </div>
+            </div>
+            <OrderStatusTracker
+              status={o.status}
+              canAdvance={side === "seller"}
+              onAdvance={(next) => updateOrderStatus(o.id, next)}
+              onCancel={
+                side === "seller" && o.status === "paid"
+                  ? () => updateOrderStatus(o.id, "cancelled")
+                  : undefined
+              }
+            />
+          </div>
+        );
+      })}
     </div>
   );
 }
 
 function BookingsList({ bookings }: { bookings: any[] }) {
-  const { equipment, getUserById } = useData();
+  const { equipment, getUserById, updateBookingStatus } = useData();
   if (bookings.length === 0) {
     return <p className="text-sm text-gray-500">No bookings yet.</p>;
   }
   return (
-    <div className="card overflow-hidden">
-      <table className="w-full text-sm">
-        <thead className="bg-gray-50 text-gray-600 text-xs uppercase">
-          <tr>
-            <th className="text-left px-4 py-2">Equipment</th>
-            <th className="text-left px-4 py-2">Renter</th>
-            <th className="text-left px-4 py-2">From</th>
-            <th className="text-left px-4 py-2">To</th>
-            <th className="text-left px-4 py-2">Total</th>
-            <th className="text-left px-4 py-2">Status</th>
-          </tr>
-        </thead>
-        <tbody>
-          {bookings.map((b) => {
-            const eq = equipment.find((e) => e.id === b.equipmentId);
-            const renter = getUserById(b.consumerId);
-            return (
-              <tr key={b.id} className="border-t border-gray-100">
-                <td className="px-4 py-2 flex items-center gap-2">
-                  <span>{eq?.imageEmoji ?? "🚜"}</span>
-                  <span>{eq?.name ?? "Equipment"}</span>
-                </td>
-                <td className="px-4 py-2">{renter?.name ?? "—"}</td>
-                <td className="px-4 py-2">{new Date(b.startDate).toLocaleDateString()}</td>
-                <td className="px-4 py-2">{new Date(b.endDate).toLocaleDateString()}</td>
-                <td className="px-4 py-2 font-semibold">₹{b.totalAmount.toLocaleString("en-IN")}</td>
-                <td className="px-4 py-2 capitalize">
-                  <span className="badge bg-brand-50 text-brand-700">{b.status}</span>
-                </td>
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
+    <div className="space-y-3">
+      {bookings.map((b) => {
+        const eq = equipment.find((e) => e.id === b.equipmentId);
+        const renter = getUserById(b.consumerId);
+        const owner = eq ? getUserById(eq.ownerId) : undefined;
+        const statusToBadge: Record<string, string> = {
+          pending: "bg-yellow-100 text-yellow-700",
+          confirmed: "bg-brand-50 text-brand-700",
+          completed: "bg-green-100 text-green-700",
+          cancelled: "bg-red-100 text-red-700",
+        };
+        return (
+          <div key={b.id} className="card p-4">
+            <div className="flex flex-wrap items-start justify-between gap-3 mb-3">
+              <div className="flex items-start gap-3">
+                <div className="text-3xl">{eq?.imageEmoji ?? "🚜"}</div>
+                <div>
+                  <div className="font-semibold text-gray-900">{eq?.name ?? "Equipment"}</div>
+                  <div className="text-xs text-gray-500">
+                    Renter: {renter?.name ?? "—"} ·{" "}
+                    {new Date(b.startDate).toLocaleDateString()} → {new Date(b.endDate).toLocaleDateString()}
+                  </div>
+                </div>
+              </div>
+              <div className="text-right">
+                <div className="font-bold text-brand-700">₹{b.totalAmount.toLocaleString("en-IN")}</div>
+                <button
+                  onClick={() =>
+                    downloadInvoice({
+                      kind: "booking",
+                      booking: b,
+                      equipment: eq,
+                      renter,
+                      owner,
+                    })
+                  }
+                  className="mt-1 inline-flex items-center gap-1 text-xs text-brand-700 hover:underline"
+                >
+                  <FileText className="w-3.5 h-3.5" /> Invoice (PDF)
+                </button>
+              </div>
+            </div>
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className={`badge ${statusToBadge[b.status] ?? "bg-gray-100 text-gray-700"} capitalize`}>
+                {b.status}
+              </span>
+              {b.status === "confirmed" && (
+                <button
+                  onClick={() => updateBookingStatus(b.id, "completed")}
+                  className="btn-secondary text-xs px-2.5 py-1"
+                >
+                  Mark as completed
+                </button>
+              )}
+              {b.status === "pending" && (
+                <button
+                  onClick={() => updateBookingStatus(b.id, "confirmed")}
+                  className="btn-primary text-xs px-2.5 py-1"
+                >
+                  Confirm booking
+                </button>
+              )}
+              {(b.status === "pending" || b.status === "confirmed") && (
+                <button
+                  onClick={() => updateBookingStatus(b.id, "cancelled")}
+                  className="btn-ghost text-xs px-2.5 py-1 text-red-600 hover:bg-red-50"
+                >
+                  Cancel
+                </button>
+              )}
+            </div>
+          </div>
+        );
+      })}
     </div>
   );
 }

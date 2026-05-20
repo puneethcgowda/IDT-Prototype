@@ -3,19 +3,22 @@ import { Leaf, LogOut, MessageCircle, Menu, X, User as UserIcon } from "lucide-r
 import { useAuth } from "../context/AuthContext";
 import { useData } from "../context/DataContext";
 import { useState } from "react";
-
-const links = [
-  { to: "/marketplace", label: "Marketplace", id: "nav-marketplace" },
-  { to: "/equipment", label: "Equipment", id: "nav-equipment" },
-  { to: "/crops", label: "Crops & Prices", id: "nav-crops" },
-  { to: "/schemes", label: "Govt. Schemes", id: "nav-schemes" },
-];
+import { useTranslation } from "react-i18next";
+import LanguageSwitcher from "./LanguageSwitcher";
 
 export default function Navbar() {
   const { user, logout } = useAuth();
   const { messages } = useData();
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [open, setOpen] = useState(false);
+
+  const links = [
+    { to: "/marketplace", label: t("nav.marketplace"), id: "nav-marketplace" },
+    { to: "/equipment", label: t("nav.equipment"), id: "nav-equipment" },
+    { to: "/crops", label: t("nav.crops"), id: "nav-crops" },
+    { to: "/schemes", label: t("nav.schemes"), id: "nav-schemes" },
+  ];
 
   const unread = user
     ? messages.filter((m) => m.toUserId === user.id && !m.read).length
@@ -48,7 +51,8 @@ export default function Navbar() {
           ))}
         </nav>
 
-        <div className="hidden md:flex items-center gap-2">
+        <div className="hidden md:flex items-center gap-1">
+          <LanguageSwitcher />
           {user ? (
             <>
               <Link
@@ -65,7 +69,7 @@ export default function Navbar() {
                 )}
               </Link>
               <Link id="nav-dashboard" to="/dashboard" className="btn-secondary text-sm">
-                Dashboard
+                {t("nav.dashboard")}
               </Link>
               <Link to="/profile" className="flex items-center gap-2 pl-2">
                 <span
@@ -81,8 +85,8 @@ export default function Navbar() {
                   navigate("/");
                 }}
                 className="btn-ghost text-sm"
-                aria-label="Log out"
-                title="Log out"
+                aria-label={t("nav.logout")}
+                title={t("nav.logout")}
               >
                 <LogOut className="w-4 h-4" />
               </button>
@@ -90,22 +94,25 @@ export default function Navbar() {
           ) : (
             <>
               <Link to="/login" className="btn-ghost text-sm">
-                Log in
+                {t("nav.login")}
               </Link>
               <Link to="/signup" className="btn-primary text-sm">
-                Get started
+                {t("nav.signup")}
               </Link>
             </>
           )}
         </div>
 
-        <button
-          className="md:hidden p-2 rounded-md hover:bg-gray-100"
-          onClick={() => setOpen((o) => !o)}
-          aria-label="Toggle menu"
-        >
-          {open ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-        </button>
+        <div className="md:hidden flex items-center gap-1">
+          <LanguageSwitcher compact />
+          <button
+            className="p-2 rounded-md hover:bg-gray-100"
+            onClick={() => setOpen((o) => !o)}
+            aria-label="Toggle menu"
+          >
+            {open ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+          </button>
+        </div>
       </div>
 
       {open && (
@@ -129,13 +136,13 @@ export default function Navbar() {
               {user ? (
                 <>
                   <Link to="/dashboard" onClick={() => setOpen(false)} className="px-3 py-2 text-sm">
-                    Dashboard
+                    {t("nav.dashboard")}
                   </Link>
                   <Link to="/messages" onClick={() => setOpen(false)} className="px-3 py-2 text-sm">
-                    Messages {unread > 0 && <span className="badge bg-red-100 text-red-700 ml-1">{unread}</span>}
+                    {t("nav.messages")} {unread > 0 && <span className="badge bg-red-100 text-red-700 ml-1">{unread}</span>}
                   </Link>
                   <Link to="/profile" onClick={() => setOpen(false)} className="px-3 py-2 text-sm flex items-center gap-2">
-                    <UserIcon className="w-4 h-4" /> Profile
+                    <UserIcon className="w-4 h-4" /> {t("nav.profile")}
                   </Link>
                   <button
                     onClick={() => {
@@ -145,16 +152,16 @@ export default function Navbar() {
                     }}
                     className="px-3 py-2 text-sm text-left flex items-center gap-2"
                   >
-                    <LogOut className="w-4 h-4" /> Log out
+                    <LogOut className="w-4 h-4" /> {t("nav.logout")}
                   </button>
                 </>
               ) : (
                 <>
                   <Link to="/login" onClick={() => setOpen(false)} className="px-3 py-2 text-sm">
-                    Log in
+                    {t("nav.login")}
                   </Link>
                   <Link to="/signup" onClick={() => setOpen(false)} className="px-3 py-2 text-sm font-semibold text-brand-700">
-                    Get started
+                    {t("nav.signup")}
                   </Link>
                 </>
               )}
