@@ -108,7 +108,15 @@
     "placeholder": "Ask about crops, schemes, prices...",
     "welcome": "Hi! I'm AgriBot. Ask me anything about farming, crops, schemes, or how to use AgriConnect.",
     "suggested": "Try asking:",
-    "noAnswer": "I'm not sure about that one yet. Try asking about crops, sowing seasons, government schemes, or how to use AgriConnect."
+    "noAnswer": "I'm not sure about that one yet. Try asking about crops, sowing seasons, government schemes, or how to use AgriConnect.",
+    "voiceMode": "Voice",
+    "textMode": "Text",
+    "startListening": "Start listening",
+    "stopListening": "Stop listening",
+    "stopSpeaking": "Stop speaking",
+    "listening": "Listening...",
+    "speaking": "Speaking...",
+    "voiceNotSupported": "Voice not supported in your browser"
   },
   "order": {
     "status": "Order Status",

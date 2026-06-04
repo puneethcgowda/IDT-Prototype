@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Bot, MessageSquare, Send, Sparkles, X } from "lucide-react";
+import { Bot, MessageSquare, Send, Sparkles, X, Mic, MicOff, Volume2, VolumeX } from "lucide-react";
 import { SUGGESTED_QUESTIONS, answerQuery } from "../data/farmingKnowledge";
+import { useVoiceBot } from "../hooks/useVoiceBot";
 
 interface ChatMessage {
   id: string;
@@ -47,8 +48,13 @@ export default function ChatbotWidget() {
   const [text, setText] = useState("");
   const [messages, setMessages] = useState<ChatMessage[]>(() => loadHistory());
   const [typing, setTyping] = useState(false);
+  const [voiceMode, setVoiceMode] = useState(false);
+  const [speakResponses, setSpeakResponses] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const { isListening, isSpeaking, transcript, speak, startListening, stopListening } = useVoiceBot({
+    onTranscript: (text) => send(text),
+  });
 
   useEffect(() => {
     saveHistory(messages);
@@ -80,14 +86,18 @@ export default function ChatbotWidget() {
     const thinkMs = 350 + Math.min(800, query.length * 25);
     setTimeout(() => {
       const result = answerQuery(query);
+      const botResponse = result.matched ? result.text : t("chatbot.noAnswer");
       const botMsg: ChatMessage = {
         id: `b-${Date.now()}`,
         role: "bot",
-        text: result.matched ? result.text : t("chatbot.noAnswer"),
+        text: botResponse,
         ts: Date.now(),
       };
       setMessages((prev) => [...prev, botMsg]);
       setTyping(false);
+      if (speakResponses) {
+        speak(botResponse);
+      }
     }, thinkMs);
   };
 
@@ -119,24 +129,49 @@ export default function ChatbotWidget() {
       {open && (
         <div className="fixed bottom-5 right-5 z-40 w-[92vw] max-w-sm h-[70vh] max-h-[600px] flex flex-col card overflow-hidden shadow-2xl">
           {/* Header */}
-          <div className="bg-gradient-to-br from-brand-600 to-brand-700 text-white p-4 flex items-center gap-3">
-            <div className="w-9 h-9 rounded-full bg-white/15 flex items-center justify-center backdrop-blur">
-              <Bot className="w-5 h-5" />
-            </div>
-            <div className="flex-1 min-w-0">
-              <div className="font-semibold flex items-center gap-1.5">
-                {t("chatbot.title")}
-                <Sparkles className="w-3.5 h-3.5 text-yellow-300" />
+          <div className="bg-gradient-to-br from-brand-600 to-brand-700 text-white p-4 space-y-2">
+            <div className="flex items-center gap-3">
+              <div className="w-9 h-9 rounded-full bg-white/15 flex items-center justify-center backdrop-blur">
+                <Bot className="w-5 h-5" />
               </div>
-              <div className="text-xs opacity-90 truncate">{t("chatbot.subtitle")}</div>
+              <div className="flex-1 min-w-0">
+                <div className="font-semibold flex items-center gap-1.5">
+                  {t("chatbot.title")}
+                  <Sparkles className="w-3.5 h-3.5 text-yellow-300" />
+                </div>
+                <div className="text-xs opacity-90 truncate">{t("chatbot.subtitle")}</div>
+              </div>
+              <button
+                onClick={() => setOpen(false)}
+                className="p-1.5 rounded-md hover:bg-white/15"
+                aria-label="Close"
+              >
+                <X className="w-4 h-4" />
+              </button>
             </div>
-            <button
-              onClick={() => setOpen(false)}
-              className="p-1.5 rounded-md hover:bg-white/15"
-              aria-label="Close"
-            >
-              <X className="w-4 h-4" />
-            </button>
+            <div className="flex gap-2 text-xs">
+              <button
+                onClick={() => setVoiceMode(false)}
+                className={`px-2 py-1 rounded transition-all ${!voiceMode ? "bg-white/30 font-semibold" : "bg-white/10 hover:bg-white/20"}`}
+              >
+                {t("chatbot.textMode")}
+              </button>
+              <button
+                onClick={() => setVoiceMode(true)}
+                className={`px-2 py-1 rounded transition-all ${voiceMode ? "bg-white/30 font-semibold" : "bg-white/10 hover:bg-white/20"}`}
+              >
+                {t("chatbot.voiceMode")}
+              </button>
+              {voiceMode && (
+                <button
+                  onClick={() => setSpeakResponses(!speakResponses)}
+                  className={`ml-auto px-2 py-1 rounded transition-all ${speakResponses ? "bg-green-500/50" : "bg-white/10 hover:bg-white/20"}`}
+                  title={t("chatbot.stopSpeaking")}
+                >
+                  {speakResponses ? <Volume2 className="w-3.5 h-3.5" /> : <VolumeX className="w-3.5 h-3.5" />}
+                </button>
+              )}
+            </div>
           </div>
 
           {/* Messages */}
@@ -194,23 +229,58 @@ export default function ChatbotWidget() {
           </div>
 
           {/* Input */}
-          <form onSubmit={onSubmit} className="p-2.5 border-t border-gray-100 bg-white flex items-center gap-2">
-            <input
-              ref={inputRef}
-              className="input"
-              placeholder={t("chatbot.placeholder")}
-              value={text}
-              onChange={(e) => setText(e.target.value)}
-            />
-            <button
-              type="submit"
-              disabled={!text.trim() || typing}
-              className="btn-primary px-3 py-2"
-              aria-label="Send"
-            >
-              <Send className="w-4 h-4" />
-            </button>
-          </form>
+          {voiceMode ? (
+            <div className="p-2.5 border-t border-gray-100 bg-white space-y-2">
+              {isListening && (
+                <div className="px-3 py-2 bg-blue-50 rounded-lg border border-blue-200 text-sm text-blue-700 text-center">
+                  {t("chatbot.listening")}
+                </div>
+              )}
+              {transcript && (
+                <div className="px-3 py-2 bg-gray-50 rounded-lg border border-gray-200 text-sm">
+                  {transcript}
+                </div>
+              )}
+              <div className="flex gap-2">
+                {!isListening ? (
+                  <button
+                    onClick={startListening}
+                    disabled={typing || isSpeaking}
+                    className="flex-1 btn-primary px-3 py-2 flex items-center justify-center gap-2"
+                  >
+                    <Mic className="w-4 h-4" />
+                    {t("chatbot.startListening")}
+                  </button>
+                ) : (
+                  <button
+                    onClick={stopListening}
+                    className="flex-1 btn-primary px-3 py-2 flex items-center justify-center gap-2 bg-red-600 hover:bg-red-700"
+                  >
+                    <MicOff className="w-4 h-4" />
+                    {t("chatbot.stopListening")}
+                  </button>
+                )}
+              </div>
+            </div>
+          ) : (
+            <form onSubmit={onSubmit} className="p-2.5 border-t border-gray-100 bg-white flex items-center gap-2">
+              <input
+                ref={inputRef}
+                className="input"
+                placeholder={t("chatbot.placeholder")}
+                value={text}
+                onChange={(e) => setText(e.target.value)}
+              />
+              <button
+                type="submit"
+                disabled={!text.trim() || typing}
+                className="btn-primary px-3 py-2"
+                aria-label="Send"
+              >
+                <Send className="w-4 h-4" />
+              </button>
+            </form>
+          )}
 
           {messages.length > 0 && (
             <div className="px-3 py-1.5 bg-white border-t border-gray-50 flex justify-end">
