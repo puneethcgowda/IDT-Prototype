@@ -10,6 +10,13 @@ import {
   Sparkles,
   Users,
   ArrowRight,
+  Zap,
+  Truck,
+  Check,
+  Award,
+  Cloud,
+  Droplets,
+  Book,
 } from "lucide-react";
 import { useData } from "../context/DataContext";
 import { seedCrops } from "../data/mockData";
@@ -140,6 +147,130 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Product Categories */}
+      <section className="bg-gradient-to-b from-white to-gray-50 border-y border-gray-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-14">
+          <div className="text-center max-w-2xl mx-auto mb-10">
+            <h2 className="text-3xl font-bold text-gray-900">Wide Range of Agricultural Products</h2>
+            <p className="mt-2 text-gray-600">Everything farmers need, all in one marketplace</p>
+          </div>
+          <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-3">
+            {[
+              { emoji: "🥬", label: "Fresh Vegetables" },
+              { emoji: "🌾", label: "Grains & Pulses" },
+              { emoji: "🍊", label: "Fruits" },
+              { emoji: "🌱", label: "Farm Inputs" },
+              { emoji: "🚜", label: "Equipment" },
+              { emoji: "🐄", label: "Livestock" },
+              { emoji: "☕", label: "Specialty Crops" },
+              { emoji: "🤝", label: "Agri-Services" },
+            ].map((cat) => (
+              <div key={cat.label} className="text-center">
+                <div className="w-full aspect-square bg-white rounded-xl border border-gray-200 flex items-center justify-center text-5xl shadow-sm hover:shadow-md transition">
+                  {cat.emoji}
+                </div>
+                <p className="mt-2 text-sm font-medium text-gray-700 line-clamp-2">{cat.label}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Harvest Festival Days Promo */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 py-12">
+        <div className="bg-gradient-to-r from-brand-600 to-brand-700 rounded-2xl overflow-hidden">
+          <div className="grid lg:grid-cols-2 gap-8 p-8 items-center">
+            <div>
+              <div className="text-yellow-300 text-lg font-bold mb-2">🌾 SPECIAL PROMOTION</div>
+              <h2 className="text-4xl lg:text-5xl font-extrabold text-white mb-4">
+                The Harvest Festival Days
+              </h2>
+              <p className="text-brand-100 text-lg mb-6">
+                Biggest Discounts of the Season! Bumper Harvest Deals!
+              </p>
+              <div className="space-y-3 mb-8">
+                <div className="flex items-center gap-3 text-white">
+                  <Zap className="w-5 h-5" /> Up to 40% off on fresh produce
+                </div>
+                <div className="flex items-center gap-3 text-white">
+                  <Truck className="w-5 h-5" /> Free delivery on orders above ₹500
+                </div>
+                <div className="flex items-center gap-3 text-white">
+                  <Award className="w-5 h-5" /> Exclusive member-only offers
+                </div>
+              </div>
+              <Link to="/marketplace" className="btn bg-yellow-300 text-brand-700 hover:bg-yellow-200 font-semibold px-6 py-3">
+                Shop Now <ArrowRight className="w-4 h-4" />
+              </Link>
+            </div>
+            <div className="text-6xl text-center opacity-20">🎉</div>
+          </div>
+        </div>
+      </section>
+
+      {/* Key Benefits */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 py-12">
+        <div className="grid md:grid-cols-4 gap-6">
+          <div className="card p-6 text-center hover:shadow-md transition">
+            <div className="inline-flex items-center justify-center w-12 h-12 bg-green-100 rounded-lg text-green-700 mb-4">
+              <Tractor className="w-6 h-6" />
+            </div>
+            <h3 className="font-semibold text-gray-900">Direct from Farms</h3>
+            <p className="text-sm text-gray-600 mt-2">Connect directly with farmers. No middlemen. Fair prices for all.</p>
+          </div>
+          <div className="card p-6 text-center hover:shadow-md transition">
+            <div className="inline-flex items-center justify-center w-12 h-12 bg-blue-100 rounded-lg text-blue-700 mb-4">
+              <Check className="w-6 h-6" />
+            </div>
+            <h3 className="font-semibold text-gray-900">Quality Guaranteed</h3>
+            <p className="text-sm text-gray-600 mt-2">All products verified for quality. Premium selection only.</p>
+          </div>
+          <div className="card p-6 text-center hover:shadow-md transition">
+            <div className="inline-flex items-center justify-center w-12 h-12 bg-purple-100 rounded-lg text-purple-700 mb-4">
+              <Sparkles className="w-6 h-6" />
+            </div>
+            <h3 className="font-semibold text-gray-900">Diverse Produce</h3>
+            <p className="text-sm text-gray-600 mt-2">Wide variety of crops and products from across India.</p>
+          </div>
+          <div className="card p-6 text-center hover:shadow-md transition">
+            <div className="inline-flex items-center justify-center w-12 h-12 bg-orange-100 rounded-lg text-orange-700 mb-4">
+              <Truck className="w-6 h-6" />
+            </div>
+            <h3 className="font-semibold text-gray-900">Fast & Reliable Delivery</h3>
+            <p className="text-sm text-gray-600 mt-2">Right to your doorstep. Tracked and insured.</p>
+          </div>
+        </div>
+      </section>
+
+      {/* Top Picks */}
+      <section className="bg-gray-50 border-y border-gray-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-14">
+          <div className="text-center max-w-2xl mx-auto mb-10">
+            <h2 className="text-3xl font-bold text-gray-900">Top Picks For You</h2>
+            <p className="mt-2 text-gray-600">Popular products and deals right now</p>
+          </div>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[
+              { emoji: "🥬", name: "Premium Fresh Vegetables", desc: "From ₹1,800/crate", detail: "Farmer Fresh" },
+              { emoji: "🌾", name: "High Quality Maize Flour Sack", desc: "From ₹2,500/sack", detail: "Locally Milled" },
+              { emoji: "📊", name: "Agri-Data Analysis Service Tablet", desc: "From ₹1,500/session", detail: "Optimize Yield" },
+              { emoji: "⚒️", name: "Durable Hand-tilled Jembe", desc: "From ₹500/piece", detail: "Indian Tilled" },
+              { emoji: "🏠", name: "Green Soul Agri-Coop Chicken Coop Kit", desc: "From ₹9,000/kit", detail: "Warm & Secure" },
+              { emoji: "🥗", name: "Balanced Fertilizer Bag", desc: "From ₹200/bag", detail: "Soil Nutrient" },
+            ].map((product) => (
+              <div key={product.name} className="card overflow-hidden hover:shadow-md transition">
+                <div className="p-6 text-center">
+                  <div className="text-5xl mb-4">{product.emoji}</div>
+                  <h3 className="font-semibold text-gray-900">{product.name}</h3>
+                  <p className="text-sm text-gray-600 mt-2">{product.desc}</p>
+                  <p className="text-xs text-brand-700 font-medium mt-2">{product.detail}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Crop strip */}
       <section className="bg-gradient-to-r from-brand-700 to-brand-600 text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12">
@@ -162,6 +293,69 @@ export default function Home() {
                 <div className="text-brand-100 text-sm">₹{c.marketPricePerKg}/kg</div>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Weather & Farming Tips */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 py-12">
+        <div className="grid lg:grid-cols-3 gap-6">
+          <div className="card p-6">
+            <div className="flex items-center gap-3 mb-4">
+              <Cloud className="w-6 h-6 text-blue-600" />
+              <h3 className="text-lg font-semibold text-gray-900">Weather Forecast</h3>
+            </div>
+            <p className="text-sm text-gray-600 mb-4">Get 14-day weather forecasts with farming-specific recommendations for your location.</p>
+            <Link to="/weather-report" className="text-brand-700 hover:text-brand-800 font-medium text-sm flex items-center gap-2">
+              View Weather Report <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
+          <div className="card p-6">
+            <div className="flex items-center gap-3 mb-4">
+              <Book className="w-6 h-6 text-green-600" />
+              <h3 className="text-lg font-semibold text-gray-900">Farming Knowledge</h3>
+            </div>
+            <p className="text-sm text-gray-600 mb-4">Access expert tips on crop selection, pest management, and seasonal farming practices.</p>
+            <Link to="/about" className="text-brand-700 hover:text-brand-800 font-medium text-sm flex items-center gap-2">
+              Learn More <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
+          <div className="card p-6">
+            <div className="flex items-center gap-3 mb-4">
+              <Award className="w-6 h-6 text-purple-600" />
+              <h3 className="text-lg font-semibold text-gray-900">AgriConnect Club</h3>
+            </div>
+            <p className="text-sm text-gray-600 mb-4">Join our club for free delivery, priority booking, and exclusive member offers.</p>
+            <Link to="/signup" className="text-brand-700 hover:text-brand-800 font-medium text-sm flex items-center gap-2">
+              Join Now <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Club Benefits */}
+      <section className="bg-gradient-to-r from-amber-50 to-yellow-50 border-y border-yellow-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12">
+          <div className="text-center mb-10">
+            <h2 className="text-3xl font-bold text-gray-900">AgriConnect Club Benefits</h2>
+            <p className="text-gray-600 mt-2">Exclusive perks for our members</p>
+          </div>
+          <div className="grid md:grid-cols-3 gap-6">
+            <div className="bg-white rounded-xl p-6 shadow-sm">
+              <div className="text-4xl mb-4">🚚</div>
+              <h3 className="font-semibold text-gray-900">Free & Fast Delivery</h3>
+              <p className="text-sm text-gray-600 mt-2">Get your orders delivered quickly with no additional charges.</p>
+            </div>
+            <div className="bg-white rounded-xl p-6 shadow-sm">
+              <div className="text-4xl mb-4">⭐</div>
+              <h3 className="font-semibold text-gray-900">Priority Booking</h3>
+              <p className="text-sm text-gray-600 mt-2">Get priority access to equipment rental and seasonal offers.</p>
+            </div>
+            <div className="bg-white rounded-xl p-6 shadow-sm">
+              <div className="text-4xl mb-4">🎁</div>
+              <h3 className="font-semibold text-gray-900">Exclusive Offers</h3>
+              <p className="text-sm text-gray-600 mt-2">Enjoy special discounts and deals available only for members.</p>
+            </div>
           </div>
         </div>
       </section>

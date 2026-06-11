@@ -12,6 +12,8 @@ import {
   ShoppingBasket,
   Tractor,
   Wallet,
+  Cloud,
+  ArrowRight,
 } from "lucide-react";
 import StarRating from "../components/StarRating";
 import NewListingModal from "../components/NewListingModal";
@@ -166,6 +168,12 @@ export default function Dashboard() {
 
       {tab === "overview" && (
         <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <h2 className="text-lg font-semibold text-gray-900">Weather & Farming Insights</h2>
+            <Link to="/weather-report" className="text-brand-700 hover:text-brand-800 text-sm font-medium flex items-center gap-2">
+              View Full Report <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
           <WeatherWidget location={user.location} />
           <div className="grid lg:grid-cols-2 gap-4">
             <Card title="Recent activity" icon={Boxes}>
