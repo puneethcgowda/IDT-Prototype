@@ -14,6 +14,7 @@ import Dashboard from "./pages/Dashboard";
 import Profile from "./pages/Profile";
 import Messages from "./pages/Messages";
 import About from "./pages/About";
+import WeatherReport from "./pages/WeatherReport";
 import { useAuth } from "./context/AuthContext";
 import OnboardingTour from "./components/OnboardingTour";
 import ChatbotWidget from "./components/ChatbotWidget";
@@ -34,6 +35,7 @@ export default function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<About />} />
+          <Route path="/weather-report" element={<WeatherReport />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/marketplace" element={<Marketplace />} />
