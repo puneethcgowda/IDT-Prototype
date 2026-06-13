@@ -5,7 +5,7 @@ export default defineConfig({
   plugins: [react()],
   server: {
     allowedHosts: [
-      'sb-lk49fzwdj928.vercel.run'
+      sb-lk49fzwdj928.vercel.run
     ]
   }
 })
