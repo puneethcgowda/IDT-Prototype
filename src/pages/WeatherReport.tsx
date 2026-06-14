@@ -112,7 +112,7 @@ interface Props {
 export default function WeatherReport({ location: propLocation }: Props) {
   const { t } = useTranslation();
   const { user } = useAuth();
-  const location = propLocation || user?.location || "Mumbai";
+  const location = propLocation || user?.location || "Bangalore, Karnataka";
   const [forecast, setForecast] = useState<DailyForecast[] | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
