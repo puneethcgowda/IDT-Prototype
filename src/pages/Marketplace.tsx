@@ -4,6 +4,7 @@ import { useData } from "../context/DataContext";
 import { useAuth } from "../context/AuthContext";
 import { Heart, List, Map as MapIcon, MapPin, Search, SlidersHorizontal, X } from "lucide-react";
 import StarRating from "../components/StarRating";
+import ProductImage from "../components/ProductImage";
 import { seedCrops } from "../data/mockData";
 import MapView, { type MapPoint } from "../components/MapView";
 
@@ -203,14 +204,20 @@ export default function Marketplace() {
             const { avg, count } = farmer ? getAverageRating(farmer.id) : { avg: 0, count: 0 };
             const saved = user ? isSaved(user.id, l.id) : false;
             return (
-              <div key={l.id} className="card overflow-hidden hover:shadow-md transition group">
+              <div key={l.id} className="group">
                 <Link to={`/marketplace/${l.id}`} className="block relative">
-                  <div className="aspect-[4/3] bg-gradient-to-br from-brand-50 to-yellow-50 flex items-center justify-center text-7xl">
-                    {l.imageEmoji}
+                  {/* 3D Card Effect */}
+                  <div className="card overflow-hidden hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 hover:scale-105 transform-gpu">
+                    <div className="relative">
+                      <ProductImage
+                        emoji={l.imageEmoji}
+                        cropType={l.cropType}
+                        title={l.title}
+                        size="medium"
+                        inStock={l.available}
+                      />
+                    </div>
                   </div>
-                  {!l.available && (
-                    <span className="absolute top-2 left-2 badge bg-gray-900/80 text-white">Out of stock</span>
-                  )}
                 </Link>
                 <div className="p-4">
                   <div className="flex items-start justify-between gap-2">

@@ -16,13 +16,13 @@ body {
 
 @layer components {
   .btn {
-    @apply inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2 font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed;
+    @apply inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2 font-medium transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed;
   }
   .btn-primary {
-    @apply btn bg-brand-600 text-white hover:bg-brand-700 focus:ring-brand-500;
+    @apply btn bg-brand-600 text-white hover:bg-brand-700 hover:shadow-lg hover:-translate-y-0.5 focus:ring-brand-500 active:scale-95;
   }
   .btn-secondary {
-    @apply btn bg-white text-brand-700 border border-brand-200 hover:bg-brand-50 focus:ring-brand-500;
+    @apply btn bg-white text-brand-700 border border-brand-200 hover:bg-brand-50 hover:shadow-md hover:-translate-y-0.5 focus:ring-brand-500;
   }
   .btn-ghost {
     @apply btn text-gray-700 hover:bg-gray-100;
@@ -31,17 +31,53 @@ body {
     @apply btn bg-red-600 text-white hover:bg-red-700 focus:ring-red-500;
   }
   .input {
-    @apply w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500;
+    @apply w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500 transition-all duration-200;
   }
   .label {
     @apply block text-sm font-medium text-gray-700 mb-1;
   }
   .card {
-    @apply bg-white rounded-xl shadow-sm border border-gray-200;
+    @apply bg-white rounded-xl shadow-sm border border-gray-200 transition-all duration-300;
   }
   .badge {
     @apply inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium;
   }
+
+  /* 3D & Immersive Effects */
+  .card-3d {
+    @apply card hover:shadow-2xl hover:-translate-y-2 transform-gpu;
+  }
+
+  .glass-morphism {
+    @apply backdrop-blur-md bg-white/30 border border-white/20 rounded-xl;
+  }
+
+  .depth-shadow {
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  }
+
+  .immersive-hover {
+    @apply hover:shadow-2xl hover:scale-105 hover:-translate-y-2 transition-all duration-300 transform-gpu;
+  }
+}
+
+/* Smooth 3D animations */
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-8px); }
+}
+
+@keyframes shimmer {
+  0% { background-position: -1000px 0; }
+  100% { background-position: 1000px 0; }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+.animate-shimmer {
+  animation: shimmer 2s infinite;
 }
 
 /* Onboarding spotlight overlay */

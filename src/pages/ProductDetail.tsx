@@ -5,6 +5,8 @@ import { useAuth } from "../context/AuthContext";
 import { Heart, MapPin, MessageCircle, ShieldCheck, Truck, Star } from "lucide-react";
 import StarRating from "../components/StarRating";
 import PaymentModal from "../components/PaymentModal";
+import ProductCart from "../components/ProductCart";
+import ProductImage from "../components/ProductImage";
 
 export default function ProductDetail() {
   const { id } = useParams<{ id: string }>();
@@ -73,13 +75,22 @@ export default function ProductDetail() {
       </Link>
       <div className="grid lg:grid-cols-2 gap-8 mt-4">
         <div>
-          <div className="aspect-[4/3] bg-gradient-to-br from-brand-50 to-yellow-50 flex items-center justify-center text-9xl rounded-2xl">
-            {listing.imageEmoji}
+          {/* 3D Product Display */}
+          <div className="bg-gradient-to-br from-gray-50 to-gray-100 p-6 rounded-3xl shadow-xl hover:shadow-2xl transition-shadow duration-300">
+            <div className="transform transition-transform duration-300 hover:scale-105">
+              <ProductImage
+                emoji={listing.imageEmoji}
+                cropType={listing.cropType}
+                title={listing.title}
+                size="large"
+                inStock={listing.available}
+              />
+            </div>
           </div>
           {farmer && (
-            <Link to={`/profile/${farmer.id}`} className="card mt-4 p-4 flex items-center gap-3 hover:shadow-md transition">
+            <Link to={`/profile/${farmer.id}`} className="card mt-4 p-4 flex items-center gap-3 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 transform-gpu backdrop-blur-sm bg-white/80 border border-white/20">
               <span
-                className="w-12 h-12 rounded-full flex items-center justify-center text-white font-semibold"
+                className="w-12 h-12 rounded-full flex items-center justify-center text-white font-semibold shadow-lg"
                 style={{ background: farmer.avatarColor }}
               >
                 {farmer.name.charAt(0)}
@@ -130,41 +141,21 @@ export default function ProductDetail() {
           <p className="mt-4 text-gray-700">{listing.description}</p>
 
           <div className="card p-4 mt-5">
-            <label className="label">Quantity (kg)</label>
-            <input
-              className="input"
-              type="number"
-              min={1}
-              max={listing.quantityKg}
-              value={qty}
-              onChange={(e) => setQty(Math.max(1, Math.min(listing.quantityKg, Number(e.target.value) || 1)))}
+            <ProductCart
+              product={listing}
+              onAddToCart={(quantityGrams) => {
+                setQty(quantityGrams / 1000);
+                setShowPay(true);
+              }}
             />
-            <div className="mt-3 flex justify-between text-sm">
-              <span className="text-gray-600">Subtotal</span>
-              <span className="font-semibold">₹{total.toLocaleString("en-IN")}</span>
-            </div>
-            <div className="mt-1 flex justify-between text-xs text-gray-500">
-              <span>Available</span>
-              <span>{listing.quantityKg} kg</span>
-            </div>
 
-            <div className="mt-4 flex gap-2">
-              <button
-                disabled={!canBuy}
-                onClick={() => setShowPay(true)}
-                className="btn-primary flex-1"
-                title={!user ? "Log in to buy" : ""}
-              >
-                Buy now · ₹{total.toLocaleString("en-IN")}
-              </button>
-              {user && farmer && user.id !== farmer.id && (
-                <Link to={`/messages?to=${farmer.id}`} className="btn-secondary">
-                  <MessageCircle className="w-4 h-4" /> Chat
-                </Link>
-              )}
-            </div>
+            {user && farmer && user.id !== farmer.id && (
+              <Link to={`/messages?to=${farmer.id}`} className="btn-secondary mt-4 flex items-center justify-center gap-2 w-full">
+                <MessageCircle className="w-4 h-4" /> Chat with farmer
+              </Link>
+            )}
             {!user && (
-              <p className="text-xs text-gray-500 mt-2">
+              <p className="text-xs text-gray-500 mt-4">
                 Please <Link to="/login" className="text-brand-700 underline">log in</Link> as a consumer to purchase.
               </p>
             )}
