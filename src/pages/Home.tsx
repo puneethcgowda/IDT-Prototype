@@ -136,8 +136,8 @@ export default function Home() {
 
         <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {features.map((f) => (
-            <div key={f.title} className="card p-6 hover:shadow-md transition">
-              <div className="w-10 h-10 rounded-lg bg-brand-50 text-brand-700 flex items-center justify-center">
+            <div key={f.title} className="card-3d p-6 group">
+              <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-brand-100 to-brand-50 text-brand-700 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
                 <f.icon className="w-5 h-5" />
               </div>
               <h3 className="mt-4 font-semibold text-gray-900">{f.title}</h3>
@@ -165,11 +165,11 @@ export default function Home() {
               { emoji: "☕", label: "Specialty Crops" },
               { emoji: "🤝", label: "Agri-Services" },
             ].map((cat) => (
-              <div key={cat.label} className="text-center">
-                <div className="w-full aspect-square bg-white rounded-xl border border-gray-200 flex items-center justify-center text-5xl shadow-sm hover:shadow-md transition">
+              <div key={cat.label} className="text-center group">
+                <div className="w-full aspect-square bg-white rounded-xl border border-gray-200 flex items-center justify-center text-5xl shadow-sm immersive-hover">
                   {cat.emoji}
                 </div>
-                <p className="mt-2 text-sm font-medium text-gray-700 line-clamp-2">{cat.label}</p>
+                <p className="mt-2 text-sm font-medium text-gray-700 line-clamp-2 group-hover:text-brand-700 transition-colors">{cat.label}</p>
               </div>
             ))}
           </div>
@@ -211,29 +211,29 @@ export default function Home() {
       {/* Key Benefits */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 py-12">
         <div className="grid md:grid-cols-4 gap-6">
-          <div className="card p-6 text-center hover:shadow-md transition">
-            <div className="inline-flex items-center justify-center w-12 h-12 bg-green-100 rounded-lg text-green-700 mb-4">
+          <div className="card-3d p-6 text-center">
+            <div className="inline-flex items-center justify-center w-12 h-12 bg-gradient-to-br from-green-100 to-green-50 rounded-lg text-green-700 mb-4 group-hover:scale-110 transition-transform">
               <Tractor className="w-6 h-6" />
             </div>
             <h3 className="font-semibold text-gray-900">Direct from Farms</h3>
             <p className="text-sm text-gray-600 mt-2">Connect directly with farmers. No middlemen. Fair prices for all.</p>
           </div>
-          <div className="card p-6 text-center hover:shadow-md transition">
-            <div className="inline-flex items-center justify-center w-12 h-12 bg-blue-100 rounded-lg text-blue-700 mb-4">
+          <div className="card-3d p-6 text-center">
+            <div className="inline-flex items-center justify-center w-12 h-12 bg-gradient-to-br from-blue-100 to-blue-50 rounded-lg text-blue-700 mb-4 group-hover:scale-110 transition-transform">
               <Check className="w-6 h-6" />
             </div>
             <h3 className="font-semibold text-gray-900">Quality Guaranteed</h3>
             <p className="text-sm text-gray-600 mt-2">All products verified for quality. Premium selection only.</p>
           </div>
-          <div className="card p-6 text-center hover:shadow-md transition">
-            <div className="inline-flex items-center justify-center w-12 h-12 bg-purple-100 rounded-lg text-purple-700 mb-4">
+          <div className="card-3d p-6 text-center">
+            <div className="inline-flex items-center justify-center w-12 h-12 bg-gradient-to-br from-purple-100 to-purple-50 rounded-lg text-purple-700 mb-4 group-hover:scale-110 transition-transform">
               <Sparkles className="w-6 h-6" />
             </div>
             <h3 className="font-semibold text-gray-900">Diverse Produce</h3>
             <p className="text-sm text-gray-600 mt-2">Wide variety of crops and products from across India.</p>
           </div>
-          <div className="card p-6 text-center hover:shadow-md transition">
-            <div className="inline-flex items-center justify-center w-12 h-12 bg-orange-100 rounded-lg text-orange-700 mb-4">
+          <div className="card-3d p-6 text-center">
+            <div className="inline-flex items-center justify-center w-12 h-12 bg-gradient-to-br from-orange-100 to-orange-50 rounded-lg text-orange-700 mb-4 group-hover:scale-110 transition-transform">
               <Truck className="w-6 h-6" />
             </div>
             <h3 className="font-semibold text-gray-900">Fast & Reliable Delivery</h3>
@@ -281,14 +281,14 @@ export default function Home() {
                 {t("home.pricesSubtitle")}
               </p>
             </div>
-            <Link to="/crops" className="btn bg-white text-brand-700 hover:bg-brand-50">
+            <Link to="/crops" className="btn bg-white text-brand-700 hover:bg-brand-50 hover:shadow-lg hover:-translate-y-0.5">
               {t("common.viewAll")} <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             {seedCrops.slice(0, 4).map((c) => (
-              <div key={c.id} className="bg-white/10 backdrop-blur rounded-xl p-4">
-                <div className="text-3xl">{c.emoji}</div>
+              <div key={c.id} className="glass-morphism p-4 hover:bg-white/40 hover:shadow-xl transition-all duration-300 transform-gpu group cursor-pointer">
+                <div className="text-3xl group-hover:scale-110 transition-transform">{c.emoji}</div>
                 <div className="mt-2 font-semibold">{c.name}</div>
                 <div className="text-brand-100 text-sm">₹{c.marketPricePerKg}/kg</div>
               </div>
@@ -300,33 +300,39 @@ export default function Home() {
       {/* Weather & Farming Tips */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 py-12">
         <div className="grid lg:grid-cols-3 gap-6">
-          <div className="card p-6">
+          <div className="card-3d p-6 group">
             <div className="flex items-center gap-3 mb-4">
-              <Cloud className="w-6 h-6 text-blue-600" />
+              <div className="w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
+                <Cloud className="w-6 h-6 text-blue-600" />
+              </div>
               <h3 className="text-lg font-semibold text-gray-900">Weather Forecast</h3>
             </div>
             <p className="text-sm text-gray-600 mb-4">Get 14-day weather forecasts with farming-specific recommendations for your location.</p>
-            <Link to="/weather-report" className="text-brand-700 hover:text-brand-800 font-medium text-sm flex items-center gap-2">
+            <Link to="/weather-report" className="text-brand-700 hover:text-brand-800 font-medium text-sm flex items-center gap-2 group-hover:translate-x-1 transition-transform">
               View Weather Report <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
-          <div className="card p-6">
+          <div className="card-3d p-6 group">
             <div className="flex items-center gap-3 mb-4">
-              <Book className="w-6 h-6 text-green-600" />
+              <div className="w-10 h-10 bg-green-50 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
+                <Book className="w-6 h-6 text-green-600" />
+              </div>
               <h3 className="text-lg font-semibold text-gray-900">Farming Knowledge</h3>
             </div>
             <p className="text-sm text-gray-600 mb-4">Access expert tips on crop selection, pest management, and seasonal farming practices.</p>
-            <Link to="/about" className="text-brand-700 hover:text-brand-800 font-medium text-sm flex items-center gap-2">
+            <Link to="/about" className="text-brand-700 hover:text-brand-800 font-medium text-sm flex items-center gap-2 group-hover:translate-x-1 transition-transform">
               Learn More <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
-          <div className="card p-6">
+          <div className="card-3d p-6 group">
             <div className="flex items-center gap-3 mb-4">
-              <Award className="w-6 h-6 text-purple-600" />
+              <div className="w-10 h-10 bg-purple-50 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
+                <Award className="w-6 h-6 text-purple-600" />
+              </div>
               <h3 className="text-lg font-semibold text-gray-900">AgriConnect Club</h3>
             </div>
             <p className="text-sm text-gray-600 mb-4">Join our club for free delivery, priority booking, and exclusive member offers.</p>
-            <Link to="/signup" className="text-brand-700 hover:text-brand-800 font-medium text-sm flex items-center gap-2">
+            <Link to="/signup" className="text-brand-700 hover:text-brand-800 font-medium text-sm flex items-center gap-2 group-hover:translate-x-1 transition-transform">
               Join Now <ArrowRight className="w-4 h-4" />
             </Link>
           </div>

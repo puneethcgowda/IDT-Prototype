@@ -141,15 +141,22 @@ export default function Signup() {
                 />
               </div>
               <div className="sm:col-span-2">
-                <label className="label">Password</label>
+                <label className="label">Password (max 8 characters)</label>
                 <input
                   className="input"
                   type="password"
                   value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  onChange={(e) => setPassword(e.target.value.slice(0, 8))}
                   required
                   minLength={6}
+                  maxLength={8}
+                  placeholder="6-8 characters"
                 />
+                {password.length > 0 && (
+                  <p className="text-xs mt-1 text-gray-500">
+                    {password.length}/8 characters
+                  </p>
+                )}
               </div>
               {role === "farmer" && (
                 <div>
