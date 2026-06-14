@@ -1,7 +1,8 @@
 import { useMemo, useState } from "react";
 import { seedCrops } from "../data/mockData";
-import { Search, TrendingDown, TrendingUp, Minus } from "lucide-react";
+import { Search, TrendingDown, TrendingUp, Minus, MapPin } from "lucide-react";
 import type { Crop } from "../types";
+import { useData } from "../context/DataContext";
 
 const SEASONS: Crop["season"][] = ["Kharif", "Rabi", "Zaid", "All Year"];
 
@@ -12,6 +13,7 @@ function TrendIcon({ trend }: { trend: Crop["trend"] }) {
 }
 
 export default function Crops() {
+  const { listings } = useData();
   const [q, setQ] = useState("");
   const [season, setSeason] = useState<string>("all");
   const [active, setActive] = useState<Crop | null>(null);
@@ -88,6 +90,34 @@ export default function Crops() {
               </div>
             </div>
           </button>
+        ))}
+
+        {/* Marketplace Listings */}
+        {listings.map((listing) => (
+          <div key={listing.id} className="card p-5 text-left hover:shadow-md transition">
+            <div className="flex items-start justify-between">
+              <div className="text-5xl">{listing.imageEmoji}</div>
+              <span className="badge bg-green-50 text-green-700">Available</span>
+            </div>
+            <h3 className="mt-3 font-semibold text-gray-900 line-clamp-2">{listing.title}</h3>
+            <p className="text-xs text-gray-500 line-clamp-2 mt-0.5">{listing.cropType}</p>
+            <div className="mt-2 flex items-center gap-1 text-xs text-gray-600">
+              <MapPin className="w-3 h-3" />
+              <span>{listing.location}</span>
+            </div>
+            <div className="mt-3 flex items-center justify-between">
+              <div>
+                <div className="text-[11px] uppercase text-gray-500">Price</div>
+                <div className="text-lg font-bold text-brand-700">
+                  ₹{listing.pricePerKg}<span className="text-xs text-gray-500">/kg</span>
+                </div>
+              </div>
+              <div className="text-right">
+                <div className="text-[11px] uppercase text-gray-500">Stock</div>
+                <div className="text-sm font-semibold text-gray-900">{listing.quantityKg} kg</div>
+              </div>
+            </div>
+          </div>
         ))}
       </div>
 
